@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESPORTIFY - BGMI & Free Fire Tournament Hub & Admin Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            purple: '#8b5cf6',
+                            yellow: '#facc15',
+                            orange: '#f97316',
+                            green: '#22c55e',
+                            cyan: '#06b6d4',
+                            red: '#ef4444',
+                            dark: '#080811',
+                            card: '#121124'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-yellow': '0 0 20px rgba(250, 204, 21, 0.4)',
+                        'neon-orange': '0 0 20px rgba(249, 115, 22, 0.4)',
+                        'neon-cyan': '0 0 20px rgba(6, 182, 212, 0.4)',
+                        'neon-purple': '0 0 20px rgba(139, 92, 246, 0.4)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #080811;
+            color: #e2e8f0;
+        }
+        h1, h2, h3, h4, .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .clip-glow-btn {
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080811;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #facc15;
+        }
+    </style>
+</head>
+<body class="bg-neon-dark bg-grid-pattern min-h-screen flex flex-col selection:bg-neon-yellow selection:text-black">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-neon-dark/90 backdrop-blur-md border-b border-neon-purple/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 bg-gradient-to-tr from-neon-orange via-neon-yellow to-neon-purple rounded-lg flex items-center justify-center shadow-neon-yellow">
+                    <i class="fa-solid font-black text-black text-xl fa-fire"></i>
+                </div>
+                <span class="font-orbitron font-extrabold text-2xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-neon-yellow to-neon-orange">
+                    ESPORTIFY<span class="text-neon-cyan">.GG</span>
+                </span>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-lg font-semibold tracking-wide">
+                <a href="#hero" class="hover:text-neon-yellow transition-colors">HOME</a>
+                <a href="#tournaments" class="hover:text-neon-yellow transition-colors">TOURNAMENTS</a>
+                <a href="#room-lookup" class="hover:text-neon-yellow transition-colors text-neon-green">ROOM ID & PASS</a>
+                <a href="#leaderboard-section" class="hover:text-neon-yellow transition-colors">STANDINGS</a>
+                <a href="#rules-section" class="hover:text-neon-yellow transition-colors">RULES</a>
+            </nav>
+
+            <!-- Action CTA & Admin Button -->
+            <div class="hidden md:flex items-center space-x-3">
+                <button onclick="openRoomLookupModal()" class="flex items-center space-x-2 bg-neon-green/20 border border-neon-green/50 hover:bg-neon-green/40 px-3.5 py-2 rounded-lg text-sm font-semibold text-neon-green transition-all">
+                    <i class="fa-solid fa-key"></i>
+                    <span>ROOM CREDENTIALS</span>
+                </button>
+                <button onclick="openAdminModal()" class="flex items-center space-x-2 bg-neon-purple/20 border border-neon-purple hover:bg-neon-purple/40 px-3.5 py-2 rounded-lg text-sm font-semibold text-neon-yellow transition-all">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>ADMIN ACCESS</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-2xl text-neon-yellow focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-neon-card border-b border-neon-purple/40 px-4 pt-2 pb-6 space-y-3">
+            <a href="#hero" class="block py-2 text-lg hover:text-neon-yellow">HOME</a>
+            <a href="#tournaments" class="block py-2 text-lg hover:text-neon-yellow">TOURNAMENTS</a>
+            <a href="#room-lookup" class="block py-2 text-lg text-neon-green font-bold">ROOM ID & PASS</a>
+            <a href="#leaderboard-section" class="block py-2 text-lg hover:text-neon-yellow">STANDINGS</a>
+            <div class="pt-2 flex flex-col space-y-2">
+                <button onclick="openRoomLookupModal()" class="w-full bg-neon-green/20 border border-neon-green text-neon-green font-orbitron font-bold py-2.5 rounded text-center">
+                    ROOM ID & PASS
+                </button>
+                <button onclick="openAdminModal()" class="w-full bg-neon-purple/30 border border-neon-purple text-neon-yellow font-orbitron font-bold py-2.5 rounded text-center">
+                    ADMIN LOGIN
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative py-12 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Hero Text Info -->
+            <div class="lg:col-span-6 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-neon-yellow/10 border border-neon-yellow/40 px-3 py-1.5 rounded-full text-neon-yellow text-sm font-semibold uppercase tracking-wider">
+                    <span class="w-2.5 h-2.5 rounded-full bg-neon-green animate-pulse"></span>
+                    <span>AUTOMATED ESPORTS ORG PLATFORM</span>
+                </div>
+                <h1 class="text-4xl sm:text-6xl font-black font-orbitron uppercase tracking-tight text-white leading-none">
+                    BGMI & FREE FIRE <br>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-neon-yellow via-neon-orange to-neon-red">
+                        TOURNAMENT HUB
+                    </span>
+                </h1>
+                <p class="text-gray-300 text-lg sm:text-xl max-w-xl">
+                    Register your squad, check live custom room IDs and passwords online, compete in battle royale majors, and claim your prize money!
+                </p>
+
+                <!-- Hero Metrics -->
+                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-neon-purple/20">
+                    <div>
+                        <div id="stat-prizepool" class="font-orbitron font-extrabold text-2xl sm:text-3xl text-neon-yellow">₹1,50,000+</div>
+                        <div class="text-xs sm:text-sm text-gray-400 uppercase font-bold">Prize Pool</div>
+                    </div>
+                    <div>
+                        <div id="stat-squads" class="font-orbitron font-extrabold text-2xl sm:text-3xl text-neon-orange">120+</div>
+                        <div class="text-xs sm:text-sm text-gray-400 uppercase font-bold">Registered Squads</div>
+                    </div>
+                    <div>
+                        <div class="font-orbitron font-extrabold text-2xl sm:text-3xl text-neon-green">LIVE</div>
+                        <div class="text-xs sm:text-sm text-gray-400 uppercase font-bold">Room Dispatcher</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="#tournaments" class="clip-glow-btn bg-neon-yellow hover:bg-neon-yellow/80 text-black font-orbitron font-black px-8 py-3.5 rounded shadow-neon-yellow transition-all transform hover:-translate-y-1">
+                        BROWSE TOURNAMENTS
+                    </a>
+                    <button onclick="openRoomLookupModal()" class="bg-neon-card border border-neon-green/60 hover:border-neon-green text-neon-green font-orbitron font-semibold px-6 py-3.5 rounded transition-all flex items-center space-x-2 shadow-neon-cyan">
+                        <i class="fa-solid fa-key"></i>
+                        <span>GET ROOM ID & PASS</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hero Live Match Room Widget -->
+            <div class="lg:col-span-6">
+                <div class="relative bg-neon-card border-2 border-neon-purple/50 rounded-2xl p-5 shadow-2xl overflow-hidden">
+                    <div class="flex items-center justify-between pb-4 border-b border-neon-purple/30">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-neon-green animate-ping"></span>
+                            <span class="font-orbitron font-bold text-white text-sm uppercase">ACTIVE MATCH ROOM DISPATCH</span>
+                        </div>
+                        <span class="bg-neon-yellow/20 border border-neon-yellow text-neon-yellow font-orbitron text-xs font-bold px-2.5 py-1 rounded">
+                            MOBILE ONLY
+                        </span>
+                    </div>
+
+                    <div id="hero-room-broadcast" class="py-6 space-y-4">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+
+                    <div class="pt-4 border-t border-neon-purple/30 flex items-center justify-between text-xs text-gray-400">
+                        <span><i class="fa-solid fa-circle-info text-neon-yellow mr-1"></i> Room details update live from Admin Panel</span>
+                        <button onclick="openAdminModal()" class="text-neon-purple hover:underline font-bold">Admin Portal Login &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- LIVE ROOM ID & PASSWORD SEARCH BAR -->
+    <section id="room-lookup" class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="bg-gradient-to-r from-neon-card via-neon-purple/20 to-neon-card border-2 border-neon-green/40 p-6 sm:p-8 rounded-3xl shadow-neon-cyan">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-1 text-center md:text-left">
+                    <span class="text-neon-green font-orbitron font-bold text-xs uppercase tracking-widest">PLAYER SELF-SERVICE PORTAL</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-orbitron text-white">CHECK TOURNAMENT ROOM ID & PASSWORD</h2>
+                    <p class="text-gray-300 text-sm">Enter your registered Captain WhatsApp or Team Name to reveal room credentials.</p>
+                </div>
+
+                <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="room-search-input" placeholder="Enter Captain WhatsApp or Team Name" class="bg-black/80 border border-neon-green/50 text-white placeholder-gray-500 font-semibold text-sm px-4 py-3 rounded-xl outline-none focus:border-neon-yellow w-full md:w-80">
+                    <button onclick="searchRoomCredentials()" class="bg-neon-green hover:bg-neon-green/80 text-black font-orbitron font-black px-6 py-3 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-unlock"></i>
+                        <span>REVEAL ROOM</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Results Display Container -->
+            <div id="room-search-results" class="hidden mt-6 pt-6 border-t border-white/10"></div>
+        </div>
+    </section>
+
+    <!-- UPCOMING TOURNAMENTS SECTION -->
+    <section id="tournaments" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-neon-purple/20 pb-4">
+            <div>
+                <h2 class="text-3xl font-extrabold font-orbitron text-white flex items-center space-x-3">
+                    <span class="text-neon-yellow">//</span>
+                    <span>UPCOMING TOURNAMENTS</span>
+                </h2>
+                <p class="text-gray-400 mt-1">Select game title and submit squad entries.</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex space-x-2">
+                <button onclick="filterTournaments('all')" id="filter-all" class="bg-neon-yellow text-black px-4 py-2 rounded-lg font-orbitron text-xs font-bold transition-all">ALL</button>
+                <button onclick="filterTournaments('BGMI')" id="filter-bgmi" class="bg-neon-card border border-neon-purple/40 text-gray-300 px-4 py-2 rounded-lg font-orbitron text-xs font-bold transition-all">BGMI</button>
+                <button onclick="filterTournaments('Free Fire')" id="filter-ff" class="bg-neon-card border border-neon-purple/40 text-gray-300 px-4 py-2 rounded-lg font-orbitron text-xs font-bold transition-all">FREE FIRE</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Tournaments Container -->
+        <div id="tournaments-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <!-- Loaded via JS -->
+        </div>
+    </section>
+
+    <!-- STANDINGS & POINTS TABLE -->
+    <section id="leaderboard-section" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="bg-neon-card border border-neon-purple/40 rounded-3xl p-6 sm:p-8 shadow-2xl">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-neon-purple/30 pb-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-extrabold font-orbitron text-white flex items-center space-x-3">
+                        <i class="fa-solid fa-list-ol text-neon-yellow"></i>
+                        <span>LIVE TOURNAMENT STANDINGS</span>
+                    </h2>
+                    <p class="text-gray-400 text-xs">Calculated based on Placement Points + Finish Points.</p>
+                </div>
+
+                <div class="flex bg-black/50 p-1 rounded-xl border border-neon-purple/30">
+                    <button onclick="renderLeaderboard('BGMI')" id="lb-tab-bgmi" class="font-orbitron text-xs font-bold px-4 py-2 rounded-lg bg-neon-yellow text-black">BGMI</button>
+                    <button onclick="renderLeaderboard('Free Fire')" id="lb-tab-ff" class="font-orbitron text-xs font-bold px-4 py-2 rounded-lg text-gray-400">FREE FIRE</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-neon-purple/40 text-neon-yellow font-orbitron text-xs uppercase">
+                            <th class="p-3">RANK</th>
+                            <th class="p-3">TEAM NAME</th>
+                            <th class="p-3 text-center">MATCHES</th>
+                            <th class="p-3 text-center">WWCD/BOOYAH</th>
+                            <th class="p-3 text-center">FINISH PTS</th>
+                            <th class="p-3 text-right">TOTAL POINTS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body" class="divide-y divide-neon-purple/10 font-semibold text-sm">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- RULES SECTION -->
+    <section id="rules-section" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <div class="mb-8 text-center">
+            <h2 class="text-3xl font-extrabold font-orbitron text-white">
+                <span class="text-neon-yellow">//</span> TOURNAMENT RULES
+            </h2>
+            <p class="text-gray-400 text-sm mt-1">Strict code of conduct for all mobile esports matches.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+            <div class="bg-neon-card border border-neon-purple/30 p-6 rounded-2xl space-y-2">
+                <div class="text-neon-yellow text-xl font-bold font-orbitron"><i class="fa-solid fa-mobile-screen mr-2"></i>MOBILE ONLY</div>
+                <p class="text-gray-400">Strictly no PC emulators allowed. Violators face instant disqualified status.</p>
+            </div>
+            <div class="bg-neon-card border border-neon-purple/30 p-6 rounded-2xl space-y-2">
+                <div class="text-neon-orange text-xl font-bold font-orbitron"><i class="fa-solid fa-clock mr-2"></i>PUNCTUALITY</div>
+                <p class="text-gray-400">Rooms open 15 mins prior to match time. Match starts precisely at scheduled time.</p>
+            </div>
+            <div class="bg-neon-card border border-neon-purple/30 p-6 rounded-2xl space-y-2">
+                <div class="text-neon-green text-xl font-bold font-orbitron"><i class="fa-solid fa-shield-halved mr-2"></i>FAIR PLAY</div>
+                <p class="text-gray-400">Zero tolerance for hacks, third-party apps, or teaming up with rival squads.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-8 border-t border-neon-purple/30 text-gray-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="font-orbitron font-extrabold text-white text-base">ESPORTIFY.GG</span>
+                <span>— Official BGMI & Free Fire Esports Platform</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="openAdminModal()" class="text-neon-yellow hover:underline flex items-center space-x-1">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                    <span>ADMIN PANEL LOGIN</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PUBLIC REGISTRATION MODAL -->
+    <div id="registration-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-neon-card border-2 border-neon-yellow rounded-2xl max-w-lg w-full p-6 shadow-neon-yellow relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeRegistrationModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-4">
+                <span id="reg-game-tag" class="text-neon-yellow font-orbitron font-bold text-xs uppercase block">BGMI SQUAD ENTRY</span>
+                <h3 id="reg-tournament-title" class="text-2xl font-bold font-orbitron text-white">TOURNAMENT REGISTRATION</h3>
+            </div>
+
+            <form id="public-reg-form" onsubmit="handlePublicRegistrationSubmit(event)" class="space-y-3">
+                <input type="hidden" id="reg-tournament-id">
+                
+                <div>
+                    <label class="block text-xs font-orbitron font-bold text-gray-300 mb-1">TEAM / SQUAD NAME</label>
+                    <input type="text" id="reg-team-name" required placeholder="e.g. Soul Warriors" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-2 text-white text-sm outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-orbitron font-bold text-gray-300 mb-1">CAPTAIN NAME</label>
+                        <input type="text" id="reg-captain-name" required placeholder="e.g. Rahul Sharma" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-2 text-white text-sm outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-orbitron font-bold text-neon-green mb-1">WHATSAPP NUMBER</label>
+                        <input type="tel" id="reg-whatsapp" required placeholder="e.g. 9876543210" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-2 text-white text-sm outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-neon-purple/20">
+                    <span class="text-xs font-orbitron font-bold text-neon-yellow block">PLAYER ROSTER DETAILS (IGN & UID)</span>
+                    <input type="text" id="p1-details" required placeholder="Player 1 (Captain): IGN + Character ID / UID" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-1.5 text-white text-xs outline-none">
+                    <input type="text" id="p2-details" placeholder="Player 2: IGN + Character ID / UID" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-1.5 text-white text-xs outline-none">
+                    <input type="text" id="p3-details" placeholder="Player 3: IGN + Character ID / UID" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-1.5 text-white text-xs outline-none">
+                    <input type="text" id="p4-details" placeholder="Player 4: IGN + Character ID / UID" class="w-full bg-black/60 border border-neon-purple/40 focus:border-neon-yellow rounded-lg px-3.5 py-1.5 text-white text-xs outline-none">
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-neon-orange via-neon-yellow to-neon-orange text-black font-orbitron font-black py-3 rounded-lg shadow-neon-yellow hover:opacity-90 transition-all mt-3">
+                    SUBMIT REGISTRATION
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ROOM DETAILS LOOKUP MODAL -->
+    <div id="room-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-neon-card border-2 border-neon-green rounded-2xl max-w-md w-full p-6 shadow-neon-cyan relative">
+            <button onclick="closeRoomLookupModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-neon-green/20 border border-neon-green text-neon-green rounded-full flex items-center justify-center mx-auto mb-2 text-xl">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <h3 class="text-xl font-bold font-orbitron text-white">LIVE MATCH ROOM DISPATCH</h3>
+                <p class="text-xs text-gray-400">Copy credentials directly to join custom room in-game.</p>
+            </div>
+
+            <div id="room-modal-content" class="space-y-4">
+                <!-- Dynamic Content Loaded Here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-neon-card border-2 border-neon-purple rounded-2xl max-w-sm w-full p-6 shadow-neon-purple relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-neon-purple/30 text-neon-yellow rounded-full flex items-center justify-center mx-auto mb-2 text-xl border border-neon-purple">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-orbitron text-white">ADMIN PORTAL</h3>
+                <p class="text-xs text-gray-400 mt-1">Manage Tournaments, Registrations & Room IDs</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-orbitron font-bold text-gray-300 mb-1">USERNAME</label>
+                    <input type="text" id="admin-username" required placeholder="admin" class="w-full bg-black/80 border border-neon-purple/50 focus:border-neon-yellow rounded-lg px-3.5 py-2 text-white text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-orbitron font-bold text-gray-300 mb-1">PASSWORD</label>
+                    <input type="password" id="admin-password" required placeholder="••••••••" class="w-full bg-black/80 border border-neon-purple/50 focus:border-neon-yellow rounded-lg px-3.5 py-2 text-white text-sm outline-none">
+                </div>
+
+                <div class="bg-black/40 p-2.5 rounded border border-white/10 text-xs text-gray-400 font-mono">
+                    Default: User: <span class="text-neon-yellow">admin</span> | Pass: <span class="text-neon-yellow">esportify123</span>
+                </div>
+
+                <button type="submit" class="w-full bg-neon-purple hover:bg-neon-purple/80 text-white font-orbitron font-bold py-3 rounded-lg transition-all">
+                    LOG IN TO DASHBOARD
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN CONTROL PANEL MODAL (FULL SCREEN DASHBOARD) -->
+    <div id="admin-dashboard-modal" class="fixed inset-0 z-50 hidden bg-neon-dark/95 backdrop-blur-xl flex flex-col overflow-y-auto">
+        <!-- Admin Dashboard Header -->
+        <div class="bg-neon-card border-b border-neon-purple/40 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center space-x-3">
+                <span class="w-3 h-3 rounded-full bg-neon-green"></span>
+                <span class="font-orbitron font-black text-xl text-white">ESPORTIFY <span class="text-neon-yellow">ADMIN CONTROL PANEL</span></span>
+            </div>
+            <button onclick="closeAdminDashboard()" class="bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg font-orbitron text-xs font-bold transition-all">
+                EXIT DASHBOARD
+            </button>
+        </div>
+
+        <div class="max-w-7xl mx-auto w-full p-4 sm:p-6 space-y-8">
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 border-b border-neon-purple/30 pb-3">
+                <button onclick="switchAdminTab('rooms')" id="atab-rooms" class="bg-neon-yellow text-black font-orbitron text-xs font-bold px-4 py-2.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-key mr-1.5"></i>ROOM DISPATCHER
+                </button>
+                <button onclick="switchAdminTab('tournaments')" id="atab-tournaments" class="bg-neon-card text-gray-300 font-orbitron text-xs font-bold px-4 py-2.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-trophy mr-1.5"></i>MANAGE TOURNAMENTS
+                </button>
+                <button onclick="switchAdminTab('registrations')" id="atab-registrations" class="bg-neon-card text-gray-300 font-orbitron text-xs font-bold px-4 py-2.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-users mr-1.5"></i>SQUAD REGISTRATIONS (<span id="admin-reg-count">0</span>)
+                </button>
+                <button onclick="switchAdminTab('leaderboard')" id="atab-leaderboard" class="bg-neon-card text-gray-300 font-orbitron text-xs font-bold px-4 py-2.5 rounded-lg transition-all">
+                    <i class="fa-solid fa-list-ol mr-1.5"></i>LEADERBOARD EDIT
+                </button>
+            </div>
+
+            <!-- TAB 1: ROOM ID DISPATCHER -->
+            <div id="sec-admin-rooms" class="space-y-6">
+                <div class="bg-neon-card border border-neon-green/40 p-6 rounded-2xl">
+                    <h3 class="font-orbitron font-bold text-xl text-white mb-2 flex items-center space-x-2">
+                        <i class="fa-solid fa-broadcast-tower text-neon-green"></i>
+                        <span>BROADCAST ROOM ID & PASSWORD LIVE</span>
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-6">Select a tournament below, set Room ID & Pass, and click Publish. Updates show on website instantly.</p>
+
+                    <form onsubmit="handlePublishRoom(event)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-orbitron font-bold text-gray-300 mb-1">SELECT TOURNAMENT</label>
+                            <select id="adm-room-tournament" required class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white text-sm">
+                                <!-- Loaded via JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-orbitron font-bold text-neon-green mb-1">ROOM ID</label>
+                            <input type="text" id="adm-room-id" required placeholder="e.g. 5829104" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white text-sm font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-orbitron font-bold text-neon-yellow mb-1">ROOM PASSWORD</label>
+                            <input type="text" id="adm-room-pass" required placeholder="e.g. 1234" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white text-sm font-bold">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-neon-green hover:bg-neon-green/80 text-black font-orbitron font-black py-2.5 rounded-lg shadow-neon-cyan transition-all">
+                                PUBLISH ROOM NOW
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Currently Active Rooms Table -->
+                <div class="bg-neon-card border border-neon-purple/30 p-6 rounded-2xl">
+                    <h4 class="font-orbitron font-bold text-lg text-white mb-4">CURRENTLY PUBLISHED ROOM CREDENTIALS</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-neon-purple/40 text-neon-yellow font-orbitron text-xs">
+                                    <th class="p-3">TOURNAMENT</th>
+                                    <th class="p-3">ROOM ID</th>
+                                    <th class="p-3">PASSWORD</th>
+                                    <th class="p-3">STATUS</th>
+                                    <th class="p-3 text-right">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adm-active-rooms-tbody" class="divide-y divide-neon-purple/20">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: TOURNAMENT MANAGER -->
+            <div id="sec-admin-tournaments" class="hidden space-y-6">
+                <!-- Add Tournament Form -->
+                <div class="bg-neon-card border border-neon-purple/40 p-6 rounded-2xl">
+                    <h3 class="font-orbitron font-bold text-lg text-white mb-4"><i class="fa-solid fa-plus text-neon-yellow mr-2"></i>ADD NEW TOURNAMENT</h3>
+                    <form onsubmit="handleCreateTournament(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-bold">
+                        <div>
+                            <label class="block text-gray-300 mb-1">TOURNAMENT TITLE</label>
+                            <input type="text" id="new-t-title" required placeholder="e.g. BGMI Pro Championship" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">GAME TITLE</label>
+                            <select id="new-t-game" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white">
+                                <option value="BGMI">BGMI</option>
+                                <option value="Free Fire">Free Fire</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">MODE / MAP</label>
+                            <input type="text" id="new-t-mode" required placeholder="e.g. Squad TPP / Erangel" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">PRIZE POOL (₹)</label>
+                            <input type="text" id="new-t-prize" required placeholder="e.g. ₹25,000" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">DATE & TIME</label>
+                            <input type="text" id="new-t-time" required placeholder="e.g. Today 8:00 PM IST" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">MAX SLOTS</label>
+                            <input type="number" id="new-t-slots" required placeholder="100" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2.5 text-white">
+                        </div>
+                        <div class="md:col-span-3">
+                            <button type="submit" class="bg-neon-yellow text-black font-orbitron font-extrabold px-6 py-3 rounded-lg shadow-neon-yellow hover:opacity-90">
+                                SAVE & PUBLISH TOURNAMENT
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Tournaments Table -->
+                <div class="bg-neon-card border border-neon-purple/40 p-6 rounded-2xl">
+                    <h4 class="font-orbitron font-bold text-lg text-white mb-4">ALL ACTIVE & PAST TOURNAMENTS</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-neon-purple/40 text-neon-yellow font-orbitron text-xs">
+                                    <th class="p-3">TITLE</th>
+                                    <th class="p-3">GAME</th>
+                                    <th class="p-3">PRIZE</th>
+                                    <th class="p-3">SLOTS</th>
+                                    <th class="p-3 text-right">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adm-tournaments-tbody" class="divide-y divide-neon-purple/20">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: REGISTRATIONS MANAGER -->
+            <div id="sec-admin-registrations" class="hidden space-y-6">
+                <div class="bg-neon-card border border-neon-purple/40 p-6 rounded-2xl">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+                        <h3 class="font-orbitron font-bold text-lg text-white">REGISTERED SQUAD ROSTERS</h3>
+                        <button onclick="exportRegistrationsCSV()" class="bg-green-600 hover:bg-green-500 text-white font-orbitron text-xs font-bold px-4 py-2 rounded-lg flex items-center space-x-2">
+                            <i class="fa-solid fa-file-csv"></i>
+                            <span>EXPORT TO CSV</span>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-neon-purple/40 text-neon-yellow font-orbitron">
+                                    <th class="p-3">TOURNAMENT</th>
+                                    <th class="p-3">TEAM NAME</th>
+                                    <th class="p-3">CAPTAIN</th>
+                                    <th class="p-3">WHATSAPP</th>
+                                    <th class="p-3">PLAYER ROSTER DETAILS</th>
+                                    <th class="p-3 text-right">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adm-registrations-tbody" class="divide-y divide-neon-purple/20">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: LEADERBOARD MANAGER -->
+            <div id="sec-admin-leaderboard" class="hidden space-y-6">
+                <div class="bg-neon-card border border-neon-purple/40 p-6 rounded-2xl space-y-4">
+                    <h3 class="font-orbitron font-bold text-lg text-white">ADD TEAM TO LEADERBOARD</h3>
+                    <form onsubmit="handleAddLeaderboardTeam(event)" class="grid grid-cols-1 md:grid-cols-6 gap-3 text-xs font-bold">
+                        <div>
+                            <label class="block text-gray-300 mb-1">GAME</label>
+                            <select id="lb-add-game" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2 text-white">
+                                <option value="BGMI">BGMI</option>
+                                <option value="Free Fire">Free Fire</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">TEAM NAME</label>
+                            <input type="text" id="lb-add-name" required placeholder="e.g. Soul" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">MATCHES</label>
+                            <input type="number" id="lb-add-matches" required value="4" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">WWCD / BOOYAH</label>
+                            <input type="number" id="lb-add-wins" required value="1" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">FINISH POINTS</label>
+                            <input type="number" id="lb-add-kills" required value="20" class="w-full bg-black border border-neon-purple/50 rounded-lg p-2 text-white">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-neon-yellow text-black font-orbitron font-extrabold py-2 rounded-lg">
+                                ADD / UPDATE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-neon-card border-2 border-neon-yellow text-white px-6 py-3.5 rounded-xl shadow-neon-yellow flex items-center space-x-3">
+        <i class="fa-solid fa-circle-check text-neon-yellow text-lg"></i>
+        <span id="toast-text" class="font-orbitron font-semibold text-sm">Action completed successfully.</span>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // DEFAULT INITIAL DATA STORAGE SETUP
+        const defaultTournaments = [
+            {
+                id: 't-1',
+                title: 'BGMI INDIA PRO LEAGUE 2026',
+                game: 'BGMI',
+                mode: 'Squad TPP • Erangel',
+                prize: '₹50,000',
+                time: 'Today, 8:00 PM IST',
+                slots: 100,
+                status: 'OPEN',
+                roomId: '',
+                roomPass: ''
+            },
+            {
+                id: 't-2',
+                title: 'FREE FIRE CLASH SQUAD CHAMPIONSHIP',
+                game: 'Free Fire',
+                mode: '4v4 Clash Squad',
+                prize: '₹30,000',
+                time: 'Tomorrow, 6:00 PM IST',
+                slots: 64,
+                status: 'OPEN',
+                roomId: '',
+                roomPass: ''
+            }
+        ];
+
+        const defaultLeaderboard = [
+            { id: 'lb-1', game: 'BGMI', team: 'TEAM SOUL', matches: 4, wins: 2, kills: 34, points: 72 },
+            { id: 'lb-2', game: 'BGMI', team: 'GODLIKE ESPORTS', matches: 4, wins: 1, kills: 39, points: 65 },
+            { id: 'lb-3', game: 'Free Fire', team: 'TOTAL GAMING', matches: 3, wins: 2, kills: 28, points: 58 }
+        ];
+
+        // LOAD OR INITIALIZE LOCALSTORAGE
+        function getTournaments() {
+            return JSON.parse(localStorage.getItem('esportify_tournaments')) || defaultTournaments;
+        }
+        function saveTournaments(data) {
+            localStorage.setItem('esportify_tournaments', JSON.stringify(data));
+        }
+
+        function getRegistrations() {
+            return JSON.parse(localStorage.getItem('esportify_registrations')) || [];
+        }
+        function saveRegistrations(data) {
+            localStorage.setItem('esportify_registrations', JSON.stringify(data));
+        }
+
+        function getLeaderboard() {
+            return JSON.parse(localStorage.getItem('esportify_leaderboard')) || defaultLeaderboard;
+        }
+        function saveLeaderboard(data) {
+            localStorage.setItem('esportify_leaderboard', JSON.stringify(data));
+        }
+
+        // INITIALIZE APPLICATION ON WINDOW LOAD
+        window.onload = function() {
+            if (!localStorage.getItem('esportify_tournaments')) saveTournaments(defaultTournaments);
+            if (!localStorage.getItem('esportify_leaderboard')) saveLeaderboard(defaultLeaderboard);
+
+            renderPublicTournaments('all');
+            renderHeroRoomWidget();
+            renderLeaderboard('BGMI');
+            updateStatsCount();
+        };
+
+        // RENDER PUBLIC TOURNAMENTS
+        function renderPublicTournaments(filter = 'all') {
+            const container = document.getElementById('tournaments-list');
+            const tournaments = getTournaments();
+            container.innerHTML = '';
+
+            const filtered = tournaments.filter(t => filter === 'all' || t.game === filter);
+
+            filtered.forEach(t => {
+                const card = document.createElement('div');
+                card.className = "bg-neon-card border border-neon-purple/30 rounded-2xl p-6 space-y-4 hover:border-neon-yellow transition-all flex flex-col justify-between";
+                
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-${t.game === 'BGMI' ? 'neon-yellow' : 'red-600'} text-black font-orbitron font-extrabold text-xs px-2.5 py-1 rounded">
+                                ${t.game}
+                            </span>
+                            <span class="text-xs text-green-400 font-bold"><i class="fa-solid fa-circle-dot mr-1"></i>REGISTRATION ${t.status}</span>
+                        </div>
+                        <h3 class="text-2xl font-bold font-orbitron text-white">${t.title}</h3>
+                        <p class="text-xs text-neon-orange font-bold">${t.mode}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 bg-black/40 p-3 rounded-xl text-xs">
+                        <div>
+                            <span class="text-gray-400 block">PRIZE POOL</span>
+                            <span class="font-orbitron font-bold text-neon-yellow text-sm">${t.prize}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 block">START TIME</span>
+                            <span class="text-white font-semibold">${t.time}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="openRegistrationModal('${t.id}', '${t.title}', '${t.game}')" class="flex-1 bg-gradient-to-r from-neon-orange to-neon-yellow text-black font-orbitron font-black py-2.5 rounded-lg hover:opacity-90 transition-all text-xs">
+                            REGISTER SQUAD
+                        </button>
+                        ${t.roomId ? `
+                            <button onclick="revealRoomModal('${t.id}')" class="bg-neon-green/20 border border-neon-green text-neon-green font-orbitron font-bold px-3 py-2.5 rounded-lg text-xs hover:bg-neon-green hover:text-black transition-all">
+                                <i class="fa-solid fa-key"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterTournaments(game) {
+            renderPublicTournaments(game);
+        }
+
+        // RENDER HERO ROOM BROADCAST WIDGET
+        function renderHeroRoomWidget() {
+            const container = document.getElementById('hero-room-broadcast');
+            const tournaments = getTournaments();
+            const activeRooms = tournaments.filter(t => t.roomId && t.roomId.trim() !== '');
+
+            if (activeRooms.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-black/60 p-4 rounded-xl text-center space-y-2 border border-white/5">
+                        <i class="fa-solid fa-lock text-neon-purple text-2xl"></i>
+                        <p class="text-sm font-orbitron text-gray-300">NO LIVE ROOM DISPATCHED YET</p>
+                        <p class="text-xs text-gray-500">Room ID & Password will appear here 15 mins before match start time.</p>
+                    </div>
+                `;
+            } else {
+                const room = activeRooms[0];
+                container.innerHTML = `
+                    <div class="bg-black/80 border border-neon-green p-4 rounded-xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-orbitron font-bold text-white text-sm">${room.title}</span>
+                            <span class="text-xs text-neon-green font-bold">DISPATCHED</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-center">
+                            <div class="bg-neon-dark p-2 rounded border border-white/10">
+                                <span class="text-[10px] text-gray-400 block font-orbitron">ROOM ID</span>
+                                <span class="font-orbitron font-black text-neon-yellow text-lg">${room.roomId}</span>
+                            </div>
+                            <div class="bg-neon-dark p-2 rounded border border-white/10">
+                                <span class="text-[10px] text-gray-400 block font-orbitron">PASSWORD</span>
+                                <span class="font-orbitron font-black text-neon-green text-lg">${room.roomPass}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // PUBLIC REGISTRATION HANDLER
+        function openRegistrationModal(id, title, game) {
+            document.getElementById('reg-tournament-id').value = id;
+            document.getElementById('reg-tournament-title').innerText = title;
+            document.getElementById('reg-game-tag').innerText = `${game} ENTRY FORM`;
+            document.getElementById('registration-modal').classList.remove('hidden');
+        }
+
+        function closeRegistrationModal() {
+            document.getElementById('registration-modal').classList.add('hidden');
+        }
+
+        function handlePublicRegistrationSubmit(e) {
+            e.preventDefault();
+            const tournamentId = document.getElementById('reg-tournament-id').value;
+            const tournaments = getTournaments();
+            const t = tournaments.find(item => item.id === tournamentId);
+
+            const newReg = {
+                id: 'reg-' + Date.now(),
+                tournamentTitle: t ? t.title : 'Tournament',
+                teamName: document.getElementById('reg-team-name').value,
+                captainName: document.getElementById('reg-captain-name').value,
+                whatsapp: document.getElementById('reg-whatsapp').value,
+                roster: [
+                    document.getElementById('p1-details').value,
+                    document.getElementById('p2-details').value,
+                    document.getElementById('p3-details').value,
+                    document.getElementById('p4-details').value
+                ].filter(Boolean).join(' | '),
+                timestamp: new Date().toLocaleString()
+            };
+
+            const regs = getRegistrations();
+            regs.push(newReg);
+            saveRegistrations(regs);
+
+            closeRegistrationModal();
+            showToast('SQUAD REGISTERED! Room ID will be available online & WhatsApp.');
+            updateStatsCount();
+            e.target.reset();
+        }
+
+        // ROOM LOOKUP SEARCH & REVEAL
+        function searchRoomCredentials() {
+            const query = document.getElementById('room-search-input').value.trim().toLowerCase();
+            const container = document.getElementById('room-search-results');
+            
+            if (!query) {
+                showToast('Please enter Captain WhatsApp or Team Name!');
+                return;
+            }
+
+            const regs = getRegistrations();
+            const found = regs.find(r => r.whatsapp.toLowerCase().includes(query) || r.teamName.toLowerCase().includes(query));
+
+            container.classList.remove('hidden');
+
+            if (found) {
+                const tournaments = getTournaments();
+                const activeRoom = tournaments.find(t => t.title === found.tournamentTitle && t.roomId);
+
+                if (activeRoom && activeRoom.roomId) {
+                    container.innerHTML = `
+                        <div class="bg-black/90 p-4 rounded-xl border border-neon-green space-y-2">
+                            <span class="text-xs text-neon-green font-bold block font-orbitron">VERIFIED TEAM: ${found.teamName.toUpperCase()}</span>
+                            <div class="flex justify-between items-center text-white">
+                                <span class="font-bold text-sm">${activeRoom.title}</span>
+                                <span class="text-xs text-neon-yellow">ROOM ID: <strong>${activeRoom.roomId}</strong> | PASS: <strong>${activeRoom.roomPass}</strong></span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="bg-black/80 p-4 rounded-xl border border-neon-yellow text-xs text-gray-300">
+                            Team <strong>${found.teamName}</strong> is registered! Room ID is not dispatched yet by admin. Please check back 15 mins before match time.
+                        </div>
+                    `;
+                }
+            } else {
+                container.innerHTML = `
+                    <div class="bg-red-950/60 p-4 rounded-xl border border-red-500 text-xs text-red-300">
+                        No registered squad found matching "${query}". Please check spelling or register your squad first.
+                    </div>
+                `;
+            }
+        }
+
+        function openRoomLookupModal() {
+            document.getElementById('room-modal').classList.remove('hidden');
+            renderModalRoomList();
+        }
+        function closeRoomLookupModal() {
+            document.getElementById('room-modal').classList.add('hidden');
+        }
+
+        function renderModalRoomList() {
+            const container = document.getElementById('room-modal-content');
+            const tournaments = getTournaments();
+            const activeRooms = tournaments.filter(t => t.roomId && t.roomId.trim() !== '');
+
+            if (activeRooms.length === 0) {
+                container.innerHTML = `
+                    <p class="text-center text-xs text-gray-400 py-4">No published room IDs available right now.</p>
+                `;
+                return;
+            }
+
+            container.innerHTML = activeRooms.map(r => `
+                <div class="bg-black/90 p-4 rounded-xl border border-neon-purple space-y-2">
+                    <span class="text-xs text-neon-yellow font-bold font-orbitron block">${r.title}</span>
+                    <div class="grid grid-cols-2 gap-2 text-center pt-1">
+                        <div class="bg-neon-dark p-2 rounded">
+                            <span class="text-[10px] text-gray-400 block">ROOM ID</span>
+                            <span class="font-orbitron font-extrabold text-neon-green text-base">${r.roomId}</span>
+                        </div>
+                        <div class="bg-neon-dark p-2 rounded">
+                            <span class="text-[10px] text-gray-400 block">PASS</span>
+                            <span class="font-orbitron font-extrabold text-neon-yellow text-base">${r.roomPass}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER LEADERBOARD
+        function renderLeaderboard(game) {
+            const body = document.getElementById('leaderboard-body');
+            const data = getLeaderboard().filter(item => item.game === game);
+
+            body.innerHTML = data.map((team, idx) => `
+                <tr class="hover:bg-neon-purple/10">
+                    <td class="p-3 font-orbitron font-bold text-neon-yellow">#0${idx + 1}</td>
+                    <td class="p-3 font-bold text-white">${team.team}</td>
+                    <td class="p-3 text-center">${team.matches}</td>
+                    <td class="p-3 text-center text-neon-yellow font-bold">${team.wins}</td>
+                    <td class="p-3 text-center text-neon-orange">${team.kills}</td>
+                    <td class="p-3 text-right font-orbitron font-extrabold text-neon-green text-base">${team.points}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ADMIN PANEL LOGIN & CONTROLS
+        function openAdminModal() {
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        }
+        function closeAdminModal() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('admin-username').value;
+            const pass = document.getElementById('admin-password').value;
+
+            if (user === 'admin' && pass === 'esportify123') {
+                closeAdminModal();
+                document.getElementById('admin-dashboard-modal').classList.remove('hidden');
+                loadAdminDashboardData();
+                showToast('Welcome Admin! Dashboard Loaded.');
+            } else {
+                showToast('Invalid credentials! Try admin / esportify123');
+            }
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('admin-dashboard-modal').classList.add('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            ['rooms', 'tournaments', 'registrations', 'leaderboard'].forEach(t => {
+                document.getElementById(`sec-admin-${t}`).classList.add('hidden');
+                document.getElementById(`atab-${t}`).className = 'bg-neon-card text-gray-300 font-orbitron text-xs font-bold px-4 py-2.5 rounded-lg';
+            });
+
+            document.getElementById(`sec-admin-${tab}`).classList.remove('hidden');
+            document.getElementById(`atab-${tab}`).className = 'bg-neon-yellow text-black font-orbitron text-xs font-bold px-4 py-2.5 rounded-lg';
+        }
+
+        function loadAdminDashboardData() {
+            const tournaments = getTournaments();
+            const regs = getRegistrations();
+
+            // Populate Room Dispatcher Dropdown
+            const select = document.getElementById('adm-room-tournament');
+            select.innerHTML = tournaments.map(t => `<option value="${t.id}">${t.title} (${t.game})</option>`).join('');
+
+            // Active Rooms Table
+            const roomsTbody = document.getElementById('adm-active-rooms-tbody');
+            roomsTbody.innerHTML = tournaments.map(t => `
+                <tr>
+                    <td class="p-3 font-bold text-white">${t.title}</td>
+                    <td class="p-3 font-orbitron text-neon-green font-bold">${t.roomId || 'NOT SET'}</td>
+                    <td class="p-3 font-orbitron text-neon-yellow font-bold">${t.roomPass || 'NOT SET'}</td>
+                    <td class="p-3 text-xs font-bold ${t.roomId ? 'text-neon-green' : 'text-gray-500'}">${t.roomId ? 'LIVE DISPATCHED' : 'OFFLINE'}</td>
+                    <td class="p-3 text-right">
+                        ${t.roomId ? `<button onclick="clearRoom('${t.id}')" class="text-red-400 hover:underline text-xs">Clear Room</button>` : '-'}
+                    </td>
+                </tr>
+            `).join('');
+
+            // Tournaments Table
+            const tTbody = document.getElementById('adm-tournaments-tbody');
+            tTbody.innerHTML = tournaments.map(t => `
+                <tr>
+                    <td class="p-3 font-bold text-white">${t.title}</td>
+                    <td class="p-3 font-orbitron text-neon-yellow">${t.game}</td>
+                    <td class="p-3 font-bold text-neon-green">${t.prize}</td>
+                    <td class="p-3">${t.slots}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteTournament('${t.id}')" class="text-red-400 hover:underline text-xs">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Registrations Table & Count
+            document.getElementById('admin-reg-count').innerText = regs.length;
+            const regTbody = document.getElementById('adm-registrations-tbody');
+            regTbody.innerHTML = regs.map(r => `
+                <tr>
+                    <td class="p-3 font-bold text-neon-yellow">${r.tournamentTitle}</td>
+                    <td class="p-3 font-bold text-white">${r.teamName}</td>
+                    <td class="p-3">${r.captainName}</td>
+                    <td class="p-3 text-neon-green font-mono">${r.whatsapp}</td>
+                    <td class="p-3 text-gray-300">${r.roster}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteRegistration('${r.id}')" class="text-red-400 hover:underline">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ADMIN ACTIONS
+        function handlePublishRoom(e) {
+            e.preventDefault();
+            const id = document.getElementById('adm-room-tournament').value;
+            const roomId = document.getElementById('adm-room-id').value;
+            const roomPass = document.getElementById('adm-room-pass').value;
+
+            const tournaments = getTournaments();
+            const t = tournaments.find(item => item.id === id);
+            if (t) {
+                t.roomId = roomId;
+                t.roomPass = roomPass;
+                saveTournaments(tournaments);
+                loadAdminDashboardData();
+                renderHeroRoomWidget();
+                renderPublicTournaments('all');
+                showToast('Room ID & Pass Published Live!');
+            }
+        }
+
+        function clearRoom(id) {
+            const tournaments = getTournaments();
+            const t = tournaments.find(item => item.id === id);
+            if (t) {
+                t.roomId = '';
+                t.roomPass = '';
+                saveTournaments(tournaments);
+                loadAdminDashboardData();
+                renderHeroRoomWidget();
+                renderPublicTournaments('all');
+                showToast('Room credentials cleared.');
+            }
+        }
+
+        function handleCreateTournament(e) {
+            e.preventDefault();
+            const tournaments = getTournaments();
+            const newT = {
+                id: 't-' + Date.now(),
+                title: document.getElementById('new-t-title').value,
+                game: document.getElementById('new-t-game').value,
+                mode: document.getElementById('new-t-mode').value,
+                prize: document.getElementById('new-t-prize').value,
+                time: document.getElementById('new-t-time').value,
+                slots: parseInt(document.getElementById('new-t-slots').value),
+                status: 'OPEN',
+                roomId: '',
+                roomPass: ''
+            };
+
+            tournaments.push(newT);
+            saveTournaments(tournaments);
+            loadAdminDashboardData();
+            renderPublicTournaments('all');
+            showToast('New Tournament Created Successfully!');
+            e.target.reset();
+        }
+
+        function deleteTournament(id) {
+            let tournaments = getTournaments().filter(t => t.id !== id);
+            saveTournaments(tournaments);
+            loadAdminDashboardData();
+            renderPublicTournaments('all');
+            showToast('Tournament deleted.');
+        }
+
+        function deleteRegistration(id) {
+            let regs = getRegistrations().filter(r => r.id !== id);
+            saveRegistrations(regs);
+            loadAdminDashboardData();
+            updateStatsCount();
+            showToast('Registration removed.');
+        }
+
+        function handleAddLeaderboardTeam(e) {
+            e.preventDefault();
+            const game = document.getElementById('lb-add-game').value;
+            const team = document.getElementById('lb-add-name').value;
+            const matches = parseInt(document.getElementById('lb-add-matches').value);
+            const wins = parseInt(document.getElementById('lb-add-wins').value);
+            const kills = parseInt(document.getElementById('lb-add-kills').value);
+            const points = (wins * 10) + kills;
+
+            const lb = getLeaderboard();
+            lb.push({ id: 'lb-' + Date.now(), game, team, matches, wins, kills, points });
+            saveLeaderboard(lb);
+            renderLeaderboard(game);
+            showToast('Leaderboard Updated!');
+            e.target.reset();
+        }
+
+        function exportRegistrationsCSV() {
+            const regs = getRegistrations();
+            if (regs.length === 0) {
+                showToast('No registrations to export!');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Tournament,Team Name,Captain Name,WhatsApp,Roster Details,Timestamp\n";
+            regs.forEach(r => {
+                csvContent += `"${r.tournamentTitle}","${r.teamName}","${r.captainName}","${r.whatsapp}","${r.roster}","${r.timestamp}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Esportify_Registrations.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function updateStatsCount() {
+            const regs = getRegistrations();
+            document.getElementById('stat-squads').innerText = (120 + regs.length) + '+';
+        }
+
+        // KEYBOARD SHORTCUT FOR ADMIN LOGIN (Ctrl + Shift + A)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                openAdminModal();
+            }
+        });
+
+        // TOAST NOTIFICATION UTILITY
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+        }
+
+        // MOBILE NAV TOGGLE
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
